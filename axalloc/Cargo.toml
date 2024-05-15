@@ -16,9 +16,9 @@ documentation = "https://rcore-os.github.io/arceos/axalloc/index.html"
 #buddy = ["allocator/buddy"]
 
 [dependencies]
-#log = "0.4"
-#cfg-if = "1.0"
+cfg-if = "1.0"
 axtype = { git = "ssh://git@github.com/shilei-massclouds/axtype" }
+axlog = { git = "ssh://git@github.com/shilei-massclouds/axlog" }
 spinirq = { git = "ssh://git@github.com/shilei-massclouds/spinirq" }
 allocator = { git = "ssh://git@github.com/shilei-massclouds/allocator" }
 axerrno = { git = "ssh://git@github.com/shilei-massclouds/axerrno" }

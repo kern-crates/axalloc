@@ -9,16 +9,17 @@ homepage = "https://github.com/rcore-os/arceos"
 repository = "https://github.com/rcore-os/arceos/tree/main/modules/axalloc"
 documentation = "https://rcore-os.github.io/arceos/axalloc/index.html"
 
-#[features]
-#default = ["tlsf"]
-#tlsf = ["allocator/tlsf"]
-#slab = ["allocator/slab"]
-#buddy = ["allocator/buddy"]
+[features]
+default = ["tlsf"]
+tlsf = ["allocator/tlsf"]
+slab = ["allocator/slab"]
+buddy = ["allocator/buddy"]
 
 [dependencies]
+log = "0.4"
 cfg-if = "1.0"
-axtype = { git = "ssh://git@github.com/shilei-massclouds/axtype" }
-axlog = { git = "ssh://git@github.com/shilei-massclouds/axlog" }
-spinirq = { git = "ssh://git@github.com/shilei-massclouds/spinirq" }
-allocator = { git = "ssh://git@github.com/shilei-massclouds/allocator" }
-axerrno = { git = "ssh://git@github.com/shilei-massclouds/axerrno" }
+spinbase = { git = "ssh://git@github.com/shilei-massclouds/spinbase.git" }
+memory_addr = { git = "ssh://git@github.com/shilei-massclouds/memory_addr.git" }
+#allocator = { path = "../../crates/allocator", features = ["bitmap"] }
+allocator = { git = "ssh://git@github.com/shilei-massclouds/allocator.git" }
+axerrno = { git = "ssh://git@github.com/shilei-massclouds/axerrno.git" }

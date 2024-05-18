@@ -8,18 +8,30 @@
 #![no_std]
 
 #[macro_use]
-extern crate axlog;
+extern crate log;
 extern crate alloc;
+
+mod page;
 
 use allocator::{AllocResult, BaseAllocator, BitmapPageAllocator, ByteAllocator, PageAllocator};
 use core::alloc::{GlobalAlloc, Layout};
 use core::ptr::NonNull;
-use spinirq::SpinNoIrq;
+use spinbase::SpinNoIrq;
 
 const PAGE_SIZE: usize = 0x1000;
 const MIN_HEAP_SIZE: usize = 0x8000; // 32 K
 
-use allocator::TlsfByteAllocator as DefaultByteAllocator;
+pub use page::GlobalPage;
+
+cfg_if::cfg_if! {
+    if #[cfg(feature = "slab")] {
+        use allocator::SlabByteAllocator as DefaultByteAllocator;
+    } else if #[cfg(feature = "buddy")] {
+        use allocator::BuddyByteAllocator as DefaultByteAllocator;
+    } else if #[cfg(feature = "tlsf")] {
+        use allocator::TlsfByteAllocator as DefaultByteAllocator;
+    }
+}
 
 /// The global allocator used by ArceOS.
 ///
@@ -48,7 +60,15 @@ impl GlobalAllocator {
 
     /// Returns the name of the allocator.
     pub const fn name(&self) -> &'static str {
-        "TLSF"
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "slab")] {
+                "slab"
+            } else if #[cfg(feature = "buddy")] {
+                "buddy"
+            } else if #[cfg(feature = "tlsf")] {
+                "TLSF"
+            }
+        }
     }
 
     /// Initializes the allocator with the given region.
@@ -188,7 +208,7 @@ pub fn global_allocator() -> &'static GlobalAllocator {
 /// valid.
 ///
 /// This function should be called only once, and before any allocation.
-pub fn init(start_vaddr: usize, size: usize) {
+pub fn global_init(start_vaddr: usize, size: usize) {
     debug!(
         "initialize global allocator at: [{:#x}, {:#x})",
         start_vaddr,
@@ -202,7 +222,7 @@ pub fn init(start_vaddr: usize, size: usize) {
 /// Users should ensure that the region is valid and not being used by others,
 /// so that the allocated memory is also valid.
 ///
-/// It's similar to [`init`], but can be called multiple times.
+/// It's similar to [`global_init`], but can be called multiple times.
 pub fn global_add_memory(start_vaddr: usize, size: usize) -> AllocResult {
     debug!(
         "add a memory region to global allocator: [{:#x}, {:#x})",

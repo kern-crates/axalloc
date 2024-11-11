@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = [
+    "axalloc",
+    "rt_axalloc",
+]
+
+[profile.release]
+lto = true

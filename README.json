@@ -1,0 +1,11 @@
+{
+  "name": "axalloc",
+  "description": "Alloc memory for lkmodel.",
+  "authors": [{
+    "name": "Shi Lei",
+    "email": "shi_lei@massclouds.com"
+  }],
+  "keywords": ["console", "boot"],
+  "repo": "shilei-massclouds/axalloc",
+  "doc_url": "https://github.com/shilei-massclouds/axalloc/blob/main/README.md"
+}
